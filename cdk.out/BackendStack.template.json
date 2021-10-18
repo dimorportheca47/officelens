@@ -1,0 +1,604 @@
+{
+  "Resources": {
+    "graphqlApi": {
+      "Type": "AWS::AppSync::GraphQLApi",
+      "Properties": {
+        "AuthenticationType": "API_KEY",
+        "Name": "graphqlapi"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/graphqlApi"
+      }
+    },
+    "MutationKey": {
+      "Type": "AWS::AppSync::ApiKey",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/MutationKey"
+      }
+    },
+    "DeviceTable8C9DE3B7": {
+      "Type": "AWS::DynamoDB::Table",
+      "Properties": {
+        "KeySchema": [
+          {
+            "AttributeName": "PartitionKey",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "SortKey",
+            "KeyType": "RANGE"
+          }
+        ],
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "PartitionKey",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "SortKey",
+            "AttributeType": "S"
+          }
+        ],
+        "ProvisionedThroughput": {
+          "ReadCapacityUnits": 5,
+          "WriteCapacityUnits": 5
+        },
+        "StreamSpecification": {
+          "StreamViewType": "NEW_IMAGE"
+        },
+        "TableName": "DeviceTable"
+      },
+      "UpdateReplacePolicy": "Retain",
+      "DeletionPolicy": "Retain",
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DeviceTable/Resource"
+      }
+    },
+    "DDBSMutationMutationHandlerServiceRoleC73E4137": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "lambda.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole/Resource"
+      }
+    },
+    "DDBSMutationMutationHandlerServiceRoleDefaultPolicyAEAD14F9": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyDocument": {
+          "Statement": [
+            {
+              "Action": "dynamodb:ListStreams",
+              "Effect": "Allow",
+              "Resource": "*"
+            },
+            {
+              "Action": [
+                "dynamodb:DescribeStream",
+                "dynamodb:GetRecords",
+                "dynamodb:GetShardIterator"
+              ],
+              "Effect": "Allow",
+              "Resource": {
+                "Fn::GetAtt": [
+                  "DeviceTable8C9DE3B7",
+                  "StreamArn"
+                ]
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "PolicyName": "DDBSMutationMutationHandlerServiceRoleDefaultPolicyAEAD14F9",
+        "Roles": [
+          {
+            "Ref": "DDBSMutationMutationHandlerServiceRoleC73E4137"
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole/DefaultPolicy/Resource"
+      }
+    },
+    "DDBSMutationMutationHandler4FDE56D3": {
+      "Type": "AWS::Lambda::Function",
+      "Properties": {
+        "Code": {
+          "S3Bucket": {
+            "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3BucketB77CEB22"
+          },
+          "S3Key": {
+            "Fn::Join": [
+              "",
+              [
+                {
+                  "Fn::Select": [
+                    0,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3VersionKey508B2146"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "Fn::Select": [
+                    1,
+                    {
+                      "Fn::Split": [
+                        "||",
+                        {
+                          "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3VersionKey508B2146"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            ]
+          }
+        },
+        "Role": {
+          "Fn::GetAtt": [
+            "DDBSMutationMutationHandlerServiceRoleC73E4137",
+            "Arn"
+          ]
+        },
+        "Environment": {
+          "Variables": {
+            "ENDPOINT": {
+              "Fn::GetAtt": [
+                "graphqlApi",
+                "GraphQLUrl"
+              ]
+            },
+            "API_KEY": {
+              "Fn::GetAtt": [
+                "MutationKey",
+                "ApiKey"
+              ]
+            }
+          }
+        },
+        "Handler": "mutation.handler",
+        "Runtime": "python3.7"
+      },
+      "DependsOn": [
+        "DDBSMutationMutationHandlerServiceRoleDefaultPolicyAEAD14F9",
+        "DDBSMutationMutationHandlerServiceRoleC73E4137"
+      ],
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DDBSMutation/MutationHandler/Resource",
+        "aws:asset:path": "asset.de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f",
+        "aws:asset:property": "Code"
+      }
+    },
+    "DDBSMutationMutationHandlerDynamoDBEventSourceBackendStackDeviceTable7248D638AC2D86D0": {
+      "Type": "AWS::Lambda::EventSourceMapping",
+      "Properties": {
+        "FunctionName": {
+          "Ref": "DDBSMutationMutationHandler4FDE56D3"
+        },
+        "BatchSize": 100,
+        "EventSourceArn": {
+          "Fn::GetAtt": [
+            "DeviceTable8C9DE3B7",
+            "StreamArn"
+          ]
+        },
+        "StartingPosition": "LATEST"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DDBSMutation/MutationHandler/DynamoDBEventSource:BackendStackDeviceTable7248D638/Resource"
+      }
+    },
+    "dataSourceIamRole2149C6A1": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Statement": [
+            {
+              "Action": "sts:AssumeRole",
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "appsync.amazonaws.com"
+              }
+            }
+          ],
+          "Version": "2012-10-17"
+        },
+        "ManagedPolicyArns": [
+          {
+            "Fn::Join": [
+              "",
+              [
+                "arn:",
+                {
+                  "Ref": "AWS::Partition"
+                },
+                ":iam::aws:policy/AmazonDynamoDBFullAccess"
+              ]
+            ]
+          }
+        ]
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/dataSourceIamRole/Resource"
+      }
+    },
+    "DDBSource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        },
+        "Name": "ddbsource",
+        "Type": "AMAZON_DYNAMODB",
+        "DynamoDBConfig": {
+          "AwsRegion": {
+            "Ref": "AWS::Region"
+          },
+          "TableName": {
+            "Ref": "DeviceTable8C9DE3B7"
+          }
+        },
+        "ServiceRoleArn": {
+          "Fn::GetAtt": [
+            "dataSourceIamRole2149C6A1",
+            "Arn"
+          ]
+        }
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/DDBSource"
+      }
+    },
+    "NONESource": {
+      "Type": "AWS::AppSync::DataSource",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        },
+        "Name": "nonesource",
+        "Type": "NONE"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/NONESource"
+      }
+    },
+    "GraphQLSchema": {
+      "Type": "AWS::AppSync::GraphQLSchema",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        },
+        "Definition": "type DeviceTable {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}\n\ntype DeviceTableConnection {\n\titems: [DeviceTable]\n\tnextToken: String\n}\n\ntype Mutation {\n\tMutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable\n}\n\ntype Query {\n\tqueryDeviceTables(\n\t\tPartitionKey: String!,\n\t\tfilter: TableDeviceTableFilterInput,\n\t\tlimit: Int,\n\t\tnextToken: String\n\t): DeviceTableConnection\n}\n\ntype Subscription {\n\tSubscriptionDeviceTable: DeviceTable\n\t\t@aws_subscribe(mutations: [\"MutationDeviceTable\"])\n}\n\ninput TableDeviceTableFilterInput {\n\tPartitionKey: TableStringFilterInput\n\tSortKey: TableStringFilterInput\n\tAlias: TableStringFilterInput\n\tSensorID: TableStringFilterInput\n\tIsConnected: TableBooleanFilterInput\n\tIsOccupied: TableBooleanFilterInput\n}\n\ninput TableStringFilterInput {\n\tne: String\n\teq: String\n\tle: String\n\tlt: String\n\tge: String\n\tgt: String\n\tcontains: String\n\tnotContains: String\n\tbetween: [String]\n\tbeginsWith: String\n}\n\ninput TableBooleanFilterInput {\n\tne: Boolean\n\teq: Boolean\n}\n\ninput UpdateDeviceTableInput {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/GraphQLSchema"
+      }
+    },
+    "queryDeviceTableResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        },
+        "FieldName": "queryDeviceTable",
+        "TypeName": "Query",
+        "DataSourceName": "ddbsource",
+        "RequestMappingTemplate": "{\n    \"version\" : \"2017-02-28\",\n    \"operation\" : \"Query\",\n    \"query\" : {\n        ## Provide a query expression. **\n        \"expression\": \"PartitionKey = :PartitionKey\",\n        \"expressionValues\" : {\n            \":PartitionKey\" : $util.dynamodb.toDynamoDBJson($ctx.args.PartitionKey)\n        }\n    },\n    \"filter\": #if($context.args.filter) $util.transform.toDynamoDBFilterExpression($ctx.args.filter) #else null #end,\n    \"limit\": $util.defaultIfNull($ctx.args.limit, 100),\n    \"nextToken\": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.nextToken, null)),\n}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/queryDeviceTableResolver"
+      }
+    },
+    "mutationDeviceTableResolver": {
+      "Type": "AWS::AppSync::Resolver",
+      "Properties": {
+        "ApiId": {
+          "Fn::GetAtt": [
+            "graphqlApi",
+            "ApiId"
+          ]
+        },
+        "FieldName": "MutationDeviceTable",
+        "TypeName": "Mutation",
+        "DataSourceName": "nonesource",
+        "RequestMappingTemplate": "{\"version\": \"2017-02-28\",\"payload\": $util.toJson($ctx.args.input)}",
+        "ResponseMappingTemplate": "$util.toJson($ctx.result)"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/mutationDeviceTableResolver"
+      }
+    },
+    "CDKMetadata": {
+      "Type": "AWS::CDK::Metadata",
+      "Properties": {
+        "Analytics": "v2:deflate64:H4sIAAAAAAAA/2VQy07DMBD8lt4dl7RC9EhbHgdAhIQf2DrbxiSxI3tdFFn5d2y3lEqcZnc9O+PZnPt8seI3s3v4tpmo27kX2iD3FYFo2Xav3h0NjliJVjsjkG21smScILa2FinwDlIdIrMAAz0Smtj88fcqrNSSpFYTiy6+HhX0ut5x/wm7LlFSMbEO+l0N3D85JeJCfLrUj0dUVCXVNxiGs+v/6cQk9NyX+iSdsNCdFGP6ZaomZpcZxACWpxyh5xsnWqQNWJwmli/urs8SMcjbUQnug8yzgaH5eF0PMooGeMEk/wAE1SX5mVWJBnv4PUt3RBMMipEareZLvuK3sy8rZWacItkjL0/4A1pisYScAQAA"
+      },
+      "Metadata": {
+        "aws:cdk:path": "BackendStack/CDKMetadata/Default"
+      },
+      "Condition": "CDKMetadataAvailable"
+    }
+  },
+  "Outputs": {
+    "EndPoint": {
+      "Description": "Appsync EndPoint: ",
+      "Value": {
+        "Fn::GetAtt": [
+          "graphqlApi",
+          "GraphQLUrl"
+        ]
+      }
+    },
+    "ApiKey": {
+      "Description": "Appsync ApiKey: ",
+      "Value": {
+        "Fn::GetAtt": [
+          "MutationKey",
+          "ApiKey"
+        ]
+      }
+    }
+  },
+  "Parameters": {
+    "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3BucketB77CEB22": {
+      "Type": "String",
+      "Description": "S3 bucket for asset \"de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f\""
+    },
+    "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3VersionKey508B2146": {
+      "Type": "String",
+      "Description": "S3 key for asset version \"de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f\""
+    },
+    "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fArtifactHash22053C9A": {
+      "Type": "String",
+      "Description": "Artifact hash for asset \"de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f\""
+    }
+  },
+  "Conditions": {
+    "CDKMetadataAvailable": {
+      "Fn::Or": [
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "af-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-northeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ap-southeast-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "ca-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "cn-northwest-1"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-central-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-north-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-2"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "eu-west-3"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "me-south-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "sa-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-east-2"
+              ]
+            }
+          ]
+        },
+        {
+          "Fn::Or": [
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-1"
+              ]
+            },
+            {
+              "Fn::Equals": [
+                {
+                  "Ref": "AWS::Region"
+                },
+                "us-west-2"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

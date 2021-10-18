@@ -1,0 +1,67 @@
+type DeviceTable {
+	PartitionKey: String!
+	SortKey: String!
+	Alias: String
+	SensorID: String
+	IsConnected: Boolean
+	IsOccupied: Boolean
+}
+
+type DeviceTableConnection {
+	items: [DeviceTable]
+	nextToken: String
+}
+
+type Mutation {
+	MutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable
+}
+
+type Query {
+	queryDeviceTables(
+		PartitionKey: String!,
+		filter: TableDeviceTableFilterInput,
+		limit: Int,
+		nextToken: String
+	): DeviceTableConnection
+}
+
+type Subscription {
+	SubscriptionDeviceTable: DeviceTable
+		@aws_subscribe(mutations: ["MutationDeviceTable"])
+}
+
+input TableDeviceTableFilterInput {
+	PartitionKey: TableStringFilterInput
+	SortKey: TableStringFilterInput
+	Alias: TableStringFilterInput
+	SensorID: TableStringFilterInput
+	IsConnected: TableBooleanFilterInput
+	IsOccupied: TableBooleanFilterInput
+}
+
+input TableStringFilterInput {
+	ne: String
+	eq: String
+	le: String
+	lt: String
+	ge: String
+	gt: String
+	contains: String
+	notContains: String
+	between: [String]
+	beginsWith: String
+}
+
+input TableBooleanFilterInput {
+	ne: Boolean
+	eq: Boolean
+}
+
+input UpdateDeviceTableInput {
+	PartitionKey: String!
+	SortKey: String!
+	Alias: String
+	SensorID: String
+	IsConnected: Boolean
+	IsOccupied: Boolean
+}
