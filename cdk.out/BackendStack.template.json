@@ -56,8 +56,8 @@
         },
         "TableName": "DeviceTable"
       },
-      "UpdateReplacePolicy": "Retain",
-      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Delete",
+      "DeletionPolicy": "Delete",
       "Metadata": {
         "aws:cdk:path": "BackendStack/DeviceTable/Resource"
       }
@@ -318,7 +318,7 @@
             "ApiId"
           ]
         },
-        "Definition": "type DeviceTable {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}\n\ntype DeviceTableConnection {\n\titems: [DeviceTable]\n\tnextToken: String\n}\n\ntype Mutation {\n\tMutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable\n}\n\ntype Query {\n\tqueryDeviceTables(\n\t\tPartitionKey: String!,\n\t\tfilter: TableDeviceTableFilterInput,\n\t\tlimit: Int,\n\t\tnextToken: String\n\t): DeviceTableConnection\n}\n\ntype Subscription {\n\tSubscriptionDeviceTable: DeviceTable\n\t\t@aws_subscribe(mutations: [\"MutationDeviceTable\"])\n}\n\ninput TableDeviceTableFilterInput {\n\tPartitionKey: TableStringFilterInput\n\tSortKey: TableStringFilterInput\n\tAlias: TableStringFilterInput\n\tSensorID: TableStringFilterInput\n\tIsConnected: TableBooleanFilterInput\n\tIsOccupied: TableBooleanFilterInput\n}\n\ninput TableStringFilterInput {\n\tne: String\n\teq: String\n\tle: String\n\tlt: String\n\tge: String\n\tgt: String\n\tcontains: String\n\tnotContains: String\n\tbetween: [String]\n\tbeginsWith: String\n}\n\ninput TableBooleanFilterInput {\n\tne: Boolean\n\teq: Boolean\n}\n\ninput UpdateDeviceTableInput {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}"
+        "Definition": "type DeviceTable {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}\n\ntype DeviceTableConnection {\n\titems: [DeviceTable]\n\tnextToken: String\n}\n\ntype Mutation {\n\tMutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable\n}\n\ntype Query {\n\tqueryDeviceTable(\n\t\tPartitionKey: String!,\n\t\tfilter: TableDeviceTableFilterInput,\n\t\tlimit: Int,\n\t\tnextToken: String\n\t): DeviceTableConnection\n}\n\ntype Subscription {\n\tSubscriptionDeviceTable: DeviceTable\n\t\t@aws_subscribe(mutations: [\"MutationDeviceTable\"])\n}\n\ninput TableDeviceTableFilterInput {\n\tPartitionKey: TableStringFilterInput\n\tSortKey: TableStringFilterInput\n\tAlias: TableStringFilterInput\n\tSensorID: TableStringFilterInput\n\tIsConnected: TableBooleanFilterInput\n\tIsOccupied: TableBooleanFilterInput\n}\n\ninput TableStringFilterInput {\n\tne: String\n\teq: String\n\tle: String\n\tlt: String\n\tge: String\n\tgt: String\n\tcontains: String\n\tnotContains: String\n\tbetween: [String]\n\tbeginsWith: String\n}\n\ninput TableBooleanFilterInput {\n\tne: Boolean\n\teq: Boolean\n}\n\ninput UpdateDeviceTableInput {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}"
       },
       "Metadata": {
         "aws:cdk:path": "BackendStack/GraphQLSchema"
@@ -339,6 +339,9 @@
         "RequestMappingTemplate": "{\n    \"version\" : \"2017-02-28\",\n    \"operation\" : \"Query\",\n    \"query\" : {\n        ## Provide a query expression. **\n        \"expression\": \"PartitionKey = :PartitionKey\",\n        \"expressionValues\" : {\n            \":PartitionKey\" : $util.dynamodb.toDynamoDBJson($ctx.args.PartitionKey)\n        }\n    },\n    \"filter\": #if($context.args.filter) $util.transform.toDynamoDBFilterExpression($ctx.args.filter) #else null #end,\n    \"limit\": $util.defaultIfNull($ctx.args.limit, 100),\n    \"nextToken\": $util.toJson($util.defaultIfNullOrEmpty($ctx.args.nextToken, null)),\n}",
         "ResponseMappingTemplate": "$util.toJson($ctx.result)"
       },
+      "DependsOn": [
+        "GraphQLSchema"
+      ],
       "Metadata": {
         "aws:cdk:path": "BackendStack/queryDeviceTableResolver"
       }
@@ -358,6 +361,9 @@
         "RequestMappingTemplate": "{\"version\": \"2017-02-28\",\"payload\": $util.toJson($ctx.args.input)}",
         "ResponseMappingTemplate": "$util.toJson($ctx.result)"
       },
+      "DependsOn": [
+        "GraphQLSchema"
+      ],
       "Metadata": {
         "aws:cdk:path": "BackendStack/mutationDeviceTableResolver"
       }

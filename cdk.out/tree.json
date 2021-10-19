@@ -474,13 +474,13 @@
                   "version": "1.128.0"
                 }
               },
-              "d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e": {
-                "id": "d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e",
-                "path": "FrontendStack/AssetParameters/d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e",
+              "c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431": {
+                "id": "c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431",
+                "path": "FrontendStack/AssetParameters/c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431",
                 "children": {
                   "S3Bucket": {
                     "id": "S3Bucket",
-                    "path": "FrontendStack/AssetParameters/d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e/S3Bucket",
+                    "path": "FrontendStack/AssetParameters/c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431/S3Bucket",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -488,7 +488,7 @@
                   },
                   "S3VersionKey": {
                     "id": "S3VersionKey",
-                    "path": "FrontendStack/AssetParameters/d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e/S3VersionKey",
+                    "path": "FrontendStack/AssetParameters/c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431/S3VersionKey",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -496,7 +496,7 @@
                   },
                   "ArtifactHash": {
                     "id": "ArtifactHash",
-                    "path": "FrontendStack/AssetParameters/d342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340e/ArtifactHash",
+                    "path": "FrontendStack/AssetParameters/c23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431/ArtifactHash",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -591,7 +591,7 @@
                                           },
                                           ":s3:::",
                                           {
-                                            "Ref": "AssetParametersd342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340eS3Bucket189B227A"
+                                            "Ref": "AssetParametersc23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431S3Bucket92630CBE"
                                           }
                                         ]
                                       ]
@@ -606,7 +606,7 @@
                                           },
                                           ":s3:::",
                                           {
-                                            "Ref": "AssetParametersd342c366955a73d94d0e54bc244ab89adfa3dfdf3b255f1201d357541f40340eS3Bucket189B227A"
+                                            "Ref": "AssetParametersc23789c6a2d0094e0433af794cc0fcc20ef6f21cc425c7400d094e494ea0b431S3Bucket92630CBE"
                                           },
                                           "/*"
                                         ]
@@ -1363,7 +1363,7 @@
                     "ApiId"
                   ]
                 },
-                "definition": "type DeviceTable {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}\n\ntype DeviceTableConnection {\n\titems: [DeviceTable]\n\tnextToken: String\n}\n\ntype Mutation {\n\tMutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable\n}\n\ntype Query {\n\tqueryDeviceTables(\n\t\tPartitionKey: String!,\n\t\tfilter: TableDeviceTableFilterInput,\n\t\tlimit: Int,\n\t\tnextToken: String\n\t): DeviceTableConnection\n}\n\ntype Subscription {\n\tSubscriptionDeviceTable: DeviceTable\n\t\t@aws_subscribe(mutations: [\"MutationDeviceTable\"])\n}\n\ninput TableDeviceTableFilterInput {\n\tPartitionKey: TableStringFilterInput\n\tSortKey: TableStringFilterInput\n\tAlias: TableStringFilterInput\n\tSensorID: TableStringFilterInput\n\tIsConnected: TableBooleanFilterInput\n\tIsOccupied: TableBooleanFilterInput\n}\n\ninput TableStringFilterInput {\n\tne: String\n\teq: String\n\tle: String\n\tlt: String\n\tge: String\n\tgt: String\n\tcontains: String\n\tnotContains: String\n\tbetween: [String]\n\tbeginsWith: String\n}\n\ninput TableBooleanFilterInput {\n\tne: Boolean\n\teq: Boolean\n}\n\ninput UpdateDeviceTableInput {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}"
+                "definition": "type DeviceTable {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}\n\ntype DeviceTableConnection {\n\titems: [DeviceTable]\n\tnextToken: String\n}\n\ntype Mutation {\n\tMutationDeviceTable(input: UpdateDeviceTableInput!): DeviceTable\n}\n\ntype Query {\n\tqueryDeviceTable(\n\t\tPartitionKey: String!,\n\t\tfilter: TableDeviceTableFilterInput,\n\t\tlimit: Int,\n\t\tnextToken: String\n\t): DeviceTableConnection\n}\n\ntype Subscription {\n\tSubscriptionDeviceTable: DeviceTable\n\t\t@aws_subscribe(mutations: [\"MutationDeviceTable\"])\n}\n\ninput TableDeviceTableFilterInput {\n\tPartitionKey: TableStringFilterInput\n\tSortKey: TableStringFilterInput\n\tAlias: TableStringFilterInput\n\tSensorID: TableStringFilterInput\n\tIsConnected: TableBooleanFilterInput\n\tIsOccupied: TableBooleanFilterInput\n}\n\ninput TableStringFilterInput {\n\tne: String\n\teq: String\n\tle: String\n\tlt: String\n\tge: String\n\tgt: String\n\tcontains: String\n\tnotContains: String\n\tbetween: [String]\n\tbeginsWith: String\n}\n\ninput TableBooleanFilterInput {\n\tne: Boolean\n\teq: Boolean\n}\n\ninput UpdateDeviceTableInput {\n\tPartitionKey: String!\n\tSortKey: String!\n\tAlias: String\n\tSensorID: String\n\tIsConnected: Boolean\n\tIsOccupied: Boolean\n}"
               }
             },
             "constructInfo": {

@@ -45,7 +45,8 @@ class BackendStack(cdk.Stack):
             table_name="DeviceTable",
             partition_key={'name':'PartitionKey', 'type': ddb.AttributeType.STRING},
             sort_key={'name':'SortKey', 'type': ddb.AttributeType.STRING},
-            stream=ddb.StreamViewType.NEW_IMAGE
+            stream=ddb.StreamViewType.NEW_IMAGE,
+            removal_policy=cdk.RemovalPolicy('DESTROY')
         )
 
         ddbs_mutation = Mutation(
@@ -97,6 +98,8 @@ class BackendStack(cdk.Stack):
             response_mapping_template="$util.toJson($ctx.result)"
         )
 
+        queryDeviceTableResolver.add_depends_on(schema)
+
         mutationDeviceTableResolver = appsync.CfnResolver(
             self,"mutationDeviceTableResolver",
             api_id=graphql_api.attr_api_id,
@@ -106,3 +109,5 @@ class BackendStack(cdk.Stack):
             request_mapping_template='{"version": "2017-02-28","payload": $util.toJson($ctx.args.input)}',
             response_mapping_template="$util.toJson($ctx.result)"
         )
+        
+        mutationDeviceTableResolver.add_depends_on(schema)
