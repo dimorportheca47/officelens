@@ -99,6 +99,7 @@ class BackendStack(cdk.Stack):
         )
 
         queryDeviceTableResolver.add_depends_on(schema)
+        queryDeviceTableResolver.add_deletion_override("GraphQLSchema")
 
         mutationDeviceTableResolver = appsync.CfnResolver(
             self,"mutationDeviceTableResolver",
@@ -109,5 +110,6 @@ class BackendStack(cdk.Stack):
             request_mapping_template='{"version": "2017-02-28","payload": $util.toJson($ctx.args.input)}',
             response_mapping_template="$util.toJson($ctx.result)"
         )
-        
+
         mutationDeviceTableResolver.add_depends_on(schema)
+        mutationDeviceTableResolver.add_deletion_override("GraphQLSchema")
