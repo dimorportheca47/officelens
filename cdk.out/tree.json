@@ -935,21 +935,21 @@
               "version": "1.128.0"
             }
           },
-          "DDBSMutation": {
-            "id": "DDBSMutation",
-            "path": "BackendStack/DDBSMutation",
+          "mutationTriggerdByDDBS": {
+            "id": "mutationTriggerdByDDBS",
+            "path": "BackendStack/mutationTriggerdByDDBS",
             "children": {
               "MutationHandler": {
                 "id": "MutationHandler",
-                "path": "BackendStack/DDBSMutation/MutationHandler",
+                "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler",
                 "children": {
                   "ServiceRole": {
                     "id": "ServiceRole",
-                    "path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole",
+                    "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/ServiceRole",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole/Resource",
+                        "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/ServiceRole/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::IAM::Role",
                           "aws:cdk:cloudformation:props": {
@@ -988,11 +988,11 @@
                       },
                       "DefaultPolicy": {
                         "id": "DefaultPolicy",
-                        "path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole/DefaultPolicy",
+                        "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/ServiceRole/DefaultPolicy",
                         "children": {
                           "Resource": {
                             "id": "Resource",
-                            "path": "BackendStack/DDBSMutation/MutationHandler/ServiceRole/DefaultPolicy/Resource",
+                            "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/ServiceRole/DefaultPolicy/Resource",
                             "attributes": {
                               "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
                               "aws:cdk:cloudformation:props": {
@@ -1020,10 +1020,10 @@
                                   ],
                                   "Version": "2012-10-17"
                                 },
-                                "policyName": "DDBSMutationMutationHandlerServiceRoleDefaultPolicyAEAD14F9",
+                                "policyName": "mutationTriggerdByDDBSMutationHandlerServiceRoleDefaultPolicyD31B4DB8",
                                 "roles": [
                                   {
-                                    "Ref": "DDBSMutationMutationHandlerServiceRoleC73E4137"
+                                    "Ref": "mutationTriggerdByDDBSMutationHandlerServiceRole017732B2"
                                   }
                                 ]
                               }
@@ -1047,11 +1047,11 @@
                   },
                   "Code": {
                     "id": "Code",
-                    "path": "BackendStack/DDBSMutation/MutationHandler/Code",
+                    "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/Code",
                     "children": {
                       "Stage": {
                         "id": "Stage",
-                        "path": "BackendStack/DDBSMutation/MutationHandler/Code/Stage",
+                        "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/Code/Stage",
                         "constructInfo": {
                           "fqn": "@aws-cdk/core.AssetStaging",
                           "version": "1.128.0"
@@ -1059,11 +1059,11 @@
                       },
                       "AssetBucket": {
                         "id": "AssetBucket",
-                        "path": "BackendStack/DDBSMutation/MutationHandler/Code/AssetBucket",
+                        "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/Code/AssetBucket",
                         "children": {
                           "Notifications": {
                             "id": "Notifications",
-                            "path": "BackendStack/DDBSMutation/MutationHandler/Code/AssetBucket/Notifications",
+                            "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/Code/AssetBucket/Notifications",
                             "constructInfo": {
                               "fqn": "@aws-cdk/core.Construct",
                               "version": "1.128.0"
@@ -1083,13 +1083,13 @@
                   },
                   "Resource": {
                     "id": "Resource",
-                    "path": "BackendStack/DDBSMutation/MutationHandler/Resource",
+                    "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/Resource",
                     "attributes": {
                       "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
                       "aws:cdk:cloudformation:props": {
                         "code": {
                           "s3Bucket": {
-                            "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3BucketB77CEB22"
+                            "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3Bucket6800AD0E"
                           },
                           "s3Key": {
                             "Fn::Join": [
@@ -1102,7 +1102,7 @@
                                       "Fn::Split": [
                                         "||",
                                         {
-                                          "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3VersionKey508B2146"
+                                          "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3VersionKey7B586895"
                                         }
                                       ]
                                     }
@@ -1115,7 +1115,7 @@
                                       "Fn::Split": [
                                         "||",
                                         {
-                                          "Ref": "AssetParametersde933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7fS3VersionKey508B2146"
+                                          "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3VersionKey7B586895"
                                         }
                                       ]
                                     }
@@ -1127,7 +1127,7 @@
                         },
                         "role": {
                           "Fn::GetAtt": [
-                            "DDBSMutationMutationHandlerServiceRoleC73E4137",
+                            "mutationTriggerdByDDBSMutationHandlerServiceRole017732B2",
                             "Arn"
                           ]
                         },
@@ -1158,16 +1158,16 @@
                   },
                   "DynamoDBEventSource:BackendStackDeviceTable7248D638": {
                     "id": "DynamoDBEventSource:BackendStackDeviceTable7248D638",
-                    "path": "BackendStack/DDBSMutation/MutationHandler/DynamoDBEventSource:BackendStackDeviceTable7248D638",
+                    "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/DynamoDBEventSource:BackendStackDeviceTable7248D638",
                     "children": {
                       "Resource": {
                         "id": "Resource",
-                        "path": "BackendStack/DDBSMutation/MutationHandler/DynamoDBEventSource:BackendStackDeviceTable7248D638/Resource",
+                        "path": "BackendStack/mutationTriggerdByDDBS/MutationHandler/DynamoDBEventSource:BackendStackDeviceTable7248D638/Resource",
                         "attributes": {
                           "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
                           "aws:cdk:cloudformation:props": {
                             "functionName": {
-                              "Ref": "DDBSMutationMutationHandler4FDE56D3"
+                              "Ref": "mutationTriggerdByDDBSMutationHandler1BDC0CD5"
                             },
                             "batchSize": 100,
                             "eventSourceArn": {
@@ -1206,13 +1206,13 @@
             "id": "AssetParameters",
             "path": "BackendStack/AssetParameters",
             "children": {
-              "de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f": {
-                "id": "de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f",
-                "path": "BackendStack/AssetParameters/de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f",
+              "2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34": {
+                "id": "2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34",
+                "path": "BackendStack/AssetParameters/2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34",
                 "children": {
                   "S3Bucket": {
                     "id": "S3Bucket",
-                    "path": "BackendStack/AssetParameters/de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f/S3Bucket",
+                    "path": "BackendStack/AssetParameters/2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34/S3Bucket",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -1220,7 +1220,7 @@
                   },
                   "S3VersionKey": {
                     "id": "S3VersionKey",
-                    "path": "BackendStack/AssetParameters/de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f/S3VersionKey",
+                    "path": "BackendStack/AssetParameters/2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34/S3VersionKey",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -1228,7 +1228,7 @@
                   },
                   "ArtifactHash": {
                     "id": "ArtifactHash",
-                    "path": "BackendStack/AssetParameters/de933c5f805d83d596fc0da920cedfcd03d73aed7135de8f8189643b92302c7f/ArtifactHash",
+                    "path": "BackendStack/AssetParameters/2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34/ArtifactHash",
                     "constructInfo": {
                       "fqn": "@aws-cdk/core.CfnParameter",
                       "version": "1.128.0"
@@ -1417,6 +1417,341 @@
             "constructInfo": {
               "fqn": "@aws-cdk/aws-appsync.CfnResolver",
               "version": "1.127.0"
+            }
+          },
+          "streamtoDeviceTable": {
+            "id": "streamtoDeviceTable",
+            "path": "BackendStack/streamtoDeviceTable",
+            "children": {
+              "Resource": {
+                "id": "Resource",
+                "path": "BackendStack/streamtoDeviceTable/Resource",
+                "attributes": {
+                  "aws:cdk:cloudformation:type": "AWS::Kinesis::Stream",
+                  "aws:cdk:cloudformation:props": {
+                    "shardCount": 1,
+                    "retentionPeriodHours": 24,
+                    "streamEncryption": {
+                      "Fn::If": [
+                        "AwsCdkKinesisEncryptedStreamsUnsupportedRegions",
+                        {
+                          "Ref": "AWS::NoValue"
+                        },
+                        {
+                          "EncryptionType": "KMS",
+                          "KeyId": "alias/aws/kinesis"
+                        }
+                      ]
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "@aws-cdk/aws-kinesis.CfnStream",
+                  "version": "1.128.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/aws-kinesis.Stream",
+              "version": "1.128.0"
+            }
+          },
+          "AwsCdkKinesisEncryptedStreamsUnsupportedRegions": {
+            "id": "AwsCdkKinesisEncryptedStreamsUnsupportedRegions",
+            "path": "BackendStack/AwsCdkKinesisEncryptedStreamsUnsupportedRegions",
+            "constructInfo": {
+              "fqn": "@aws-cdk/core.CfnCondition",
+              "version": "1.128.0"
+            }
+          },
+          "putItemToDeviceTable": {
+            "id": "putItemToDeviceTable",
+            "path": "BackendStack/putItemToDeviceTable",
+            "children": {
+              "PutItemHandler": {
+                "id": "PutItemHandler",
+                "path": "BackendStack/putItemToDeviceTable/PutItemHandler",
+                "children": {
+                  "ServiceRole": {
+                    "id": "ServiceRole",
+                    "path": "BackendStack/putItemToDeviceTable/PutItemHandler/ServiceRole",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "BackendStack/putItemToDeviceTable/PutItemHandler/ServiceRole/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::IAM::Role",
+                          "aws:cdk:cloudformation:props": {
+                            "assumeRolePolicyDocument": {
+                              "Statement": [
+                                {
+                                  "Action": "sts:AssumeRole",
+                                  "Effect": "Allow",
+                                  "Principal": {
+                                    "Service": "lambda.amazonaws.com"
+                                  }
+                                }
+                              ],
+                              "Version": "2012-10-17"
+                            },
+                            "managedPolicyArns": [
+                              {
+                                "Fn::Join": [
+                                  "",
+                                  [
+                                    "arn:",
+                                    {
+                                      "Ref": "AWS::Partition"
+                                    },
+                                    ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+                                  ]
+                                ]
+                              }
+                            ]
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "@aws-cdk/aws-iam.CfnRole",
+                          "version": "1.128.0"
+                        }
+                      },
+                      "DefaultPolicy": {
+                        "id": "DefaultPolicy",
+                        "path": "BackendStack/putItemToDeviceTable/PutItemHandler/ServiceRole/DefaultPolicy",
+                        "children": {
+                          "Resource": {
+                            "id": "Resource",
+                            "path": "BackendStack/putItemToDeviceTable/PutItemHandler/ServiceRole/DefaultPolicy/Resource",
+                            "attributes": {
+                              "aws:cdk:cloudformation:type": "AWS::IAM::Policy",
+                              "aws:cdk:cloudformation:props": {
+                                "policyDocument": {
+                                  "Statement": [
+                                    {
+                                      "Action": [
+                                        "kinesis:DescribeStreamSummary",
+                                        "kinesis:GetRecords",
+                                        "kinesis:GetShardIterator",
+                                        "kinesis:ListShards",
+                                        "kinesis:SubscribeToShard"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": {
+                                        "Fn::GetAtt": [
+                                          "streamtoDeviceTable8F974183",
+                                          "Arn"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Action": "kinesis:DescribeStream",
+                                      "Effect": "Allow",
+                                      "Resource": {
+                                        "Fn::GetAtt": [
+                                          "streamtoDeviceTable8F974183",
+                                          "Arn"
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "Action": [
+                                        "dynamodb:BatchWriteItem",
+                                        "dynamodb:PutItem",
+                                        "dynamodb:UpdateItem",
+                                        "dynamodb:DeleteItem"
+                                      ],
+                                      "Effect": "Allow",
+                                      "Resource": [
+                                        {
+                                          "Fn::GetAtt": [
+                                            "DeviceTable8C9DE3B7",
+                                            "Arn"
+                                          ]
+                                        },
+                                        {
+                                          "Ref": "AWS::NoValue"
+                                        }
+                                      ]
+                                    }
+                                  ],
+                                  "Version": "2012-10-17"
+                                },
+                                "policyName": "putItemToDeviceTablePutItemHandlerServiceRoleDefaultPolicy20C57708",
+                                "roles": [
+                                  {
+                                    "Ref": "putItemToDeviceTablePutItemHandlerServiceRole56C3A439"
+                                  }
+                                ]
+                              }
+                            },
+                            "constructInfo": {
+                              "fqn": "@aws-cdk/aws-iam.CfnPolicy",
+                              "version": "1.128.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "@aws-cdk/aws-iam.Policy",
+                          "version": "1.128.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "@aws-cdk/aws-iam.Role",
+                      "version": "1.128.0"
+                    }
+                  },
+                  "Code": {
+                    "id": "Code",
+                    "path": "BackendStack/putItemToDeviceTable/PutItemHandler/Code",
+                    "children": {
+                      "Stage": {
+                        "id": "Stage",
+                        "path": "BackendStack/putItemToDeviceTable/PutItemHandler/Code/Stage",
+                        "constructInfo": {
+                          "fqn": "@aws-cdk/core.AssetStaging",
+                          "version": "1.128.0"
+                        }
+                      },
+                      "AssetBucket": {
+                        "id": "AssetBucket",
+                        "path": "BackendStack/putItemToDeviceTable/PutItemHandler/Code/AssetBucket",
+                        "children": {
+                          "Notifications": {
+                            "id": "Notifications",
+                            "path": "BackendStack/putItemToDeviceTable/PutItemHandler/Code/AssetBucket/Notifications",
+                            "constructInfo": {
+                              "fqn": "@aws-cdk/core.Construct",
+                              "version": "1.128.0"
+                            }
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "@aws-cdk/aws-s3.BucketBase",
+                          "version": "1.128.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "@aws-cdk/aws-s3-assets.Asset",
+                      "version": "1.128.0"
+                    }
+                  },
+                  "Resource": {
+                    "id": "Resource",
+                    "path": "BackendStack/putItemToDeviceTable/PutItemHandler/Resource",
+                    "attributes": {
+                      "aws:cdk:cloudformation:type": "AWS::Lambda::Function",
+                      "aws:cdk:cloudformation:props": {
+                        "code": {
+                          "s3Bucket": {
+                            "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3Bucket6800AD0E"
+                          },
+                          "s3Key": {
+                            "Fn::Join": [
+                              "",
+                              [
+                                {
+                                  "Fn::Select": [
+                                    0,
+                                    {
+                                      "Fn::Split": [
+                                        "||",
+                                        {
+                                          "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3VersionKey7B586895"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  "Fn::Select": [
+                                    1,
+                                    {
+                                      "Fn::Split": [
+                                        "||",
+                                        {
+                                          "Ref": "AssetParameters2d8ed44776a641b453017462ae78b53910f055925d9f4b5168571f82ee11db34S3VersionKey7B586895"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            ]
+                          }
+                        },
+                        "role": {
+                          "Fn::GetAtt": [
+                            "putItemToDeviceTablePutItemHandlerServiceRole56C3A439",
+                            "Arn"
+                          ]
+                        },
+                        "environment": {
+                          "variables": {
+                            "TABLE_NAME": {
+                              "Ref": "DeviceTable8C9DE3B7"
+                            },
+                            "PARTITION_KEY": "PartitionKey",
+                            "SORT_KEY": "SortKey"
+                          }
+                        },
+                        "handler": "putitem.handler",
+                        "runtime": "python3.7"
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "@aws-cdk/aws-lambda.CfnFunction",
+                      "version": "1.128.0"
+                    }
+                  },
+                  "KinesisEventSource:BackendStackstreamtoDeviceTableFCADF290": {
+                    "id": "KinesisEventSource:BackendStackstreamtoDeviceTableFCADF290",
+                    "path": "BackendStack/putItemToDeviceTable/PutItemHandler/KinesisEventSource:BackendStackstreamtoDeviceTableFCADF290",
+                    "children": {
+                      "Resource": {
+                        "id": "Resource",
+                        "path": "BackendStack/putItemToDeviceTable/PutItemHandler/KinesisEventSource:BackendStackstreamtoDeviceTableFCADF290/Resource",
+                        "attributes": {
+                          "aws:cdk:cloudformation:type": "AWS::Lambda::EventSourceMapping",
+                          "aws:cdk:cloudformation:props": {
+                            "functionName": {
+                              "Ref": "putItemToDeviceTablePutItemHandlerE7576E0D"
+                            },
+                            "batchSize": 100,
+                            "bisectBatchOnFunctionError": true,
+                            "eventSourceArn": {
+                              "Fn::GetAtt": [
+                                "streamtoDeviceTable8F974183",
+                                "Arn"
+                              ]
+                            },
+                            "maximumRetryAttempts": 2,
+                            "parallelizationFactor": 1,
+                            "startingPosition": "LATEST"
+                          }
+                        },
+                        "constructInfo": {
+                          "fqn": "@aws-cdk/aws-lambda.CfnEventSourceMapping",
+                          "version": "1.128.0"
+                        }
+                      }
+                    },
+                    "constructInfo": {
+                      "fqn": "@aws-cdk/aws-lambda.EventSourceMapping",
+                      "version": "1.128.0"
+                    }
+                  }
+                },
+                "constructInfo": {
+                  "fqn": "@aws-cdk/aws-lambda.Function",
+                  "version": "1.128.0"
+                }
+              }
+            },
+            "constructInfo": {
+              "fqn": "@aws-cdk/core.Construct",
+              "version": "1.128.0"
             }
           },
           "CDKMetadata": {

@@ -1,11 +1,11 @@
-from aws_cdk import (
-    core as cdk,
-    aws_appsync as appsync,
-    aws_dynamodb as ddb,
-    aws_iam as iam
-    )
+from aws_cdk import aws_appsync as appsync
+from aws_cdk import aws_dynamodb as ddb
+from aws_cdk import aws_iam as iam
+from aws_cdk import aws_kinesis as kinesis
+from aws_cdk import core as cdk
+# Lambda function triggered by DDB stream 
+from stack import ( MutationStack, PutItemStack )
 
-from mutation import Mutation
 with open("./schema.txt") as f:
     definition = f.read()
 
@@ -49,9 +49,9 @@ class BackendStack(cdk.Stack):
             removal_policy=cdk.RemovalPolicy('DESTROY')
         )
 
-        ddbs_mutation = Mutation(
-            self, 'DDBSMutation',
-            endpoint = graphql_api.attr_graph_ql_url,
+        mutationTriggerdByDDBS = MutationStack(
+            self, 'mutationTriggerdByDDBS',
+            endpoint=graphql_api.attr_graph_ql_url,
             key=api_key.attr_api_key,
             table=device_table
         )
@@ -113,3 +113,17 @@ class BackendStack(cdk.Stack):
 
         mutationDeviceTableResolver.add_depends_on(schema)
         mutationDeviceTableResolver.add_deletion_override("GraphQLSchema")
+
+        streamtoDeviceTable = kinesis.Stream(
+            self, "streamtoDeviceTable",
+            shard_count=1,
+        )
+
+        putItemToDeviceTable = PutItemStack(
+            self, 'putItemToDeviceTable',
+            table=device_table,
+            partition=device_table.schema().partition_key.name,
+            sort=device_table.schema().sort_key.name,
+            stream=streamtoDeviceTable
+        )
+

@@ -6,8 +6,6 @@ from aws_cdk import (
     aws_iam as iam 
     )
 
-from mutation import Mutation
-
 class FrontendStack(cdk.Stack):
 
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
