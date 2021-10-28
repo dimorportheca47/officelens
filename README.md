@@ -17,14 +17,15 @@
 
 ## 参考
 
-https://docs.aws.amazon.com/cdk/api/latest/python/
-https://dev.classmethod.jp/articles/cloudfront-origin-access-identity-to-restrict-access-to-s3-bucket-in-aws-cdk/
-https://summit-online-japan-cdk.workshop.aws/15-prerequisites/600-python.html
-https://dev.classmethod.jp/articles/aws-cdk-deploy-react/
+* https://docs.aws.amazon.com/cdk/api/latest/python/
+* https://dev.classmethod.jp/articles/cloudfront-origin-access-identity-to-restrict-access-to-s3-bucket-in-aws-cdk/
+* https://summit-online-japan-cdk.workshop.aws/15-prerequisites/600-python.html
+* https://dev.classmethod.jp/articles/aws-cdk-deploy-react/
 
 ## 概要
 
-[Image: スクリーンショット 0003-10-08 13.46.52.png]
+画像が貼れないからむずかちい 
+
 ## AWS CDK のCLIのインストール
 
 ```
@@ -96,8 +97,12 @@ cdk deploy BackendStack
 ```
 
 デプロイが初回なら数分かかるかなーー
-[Image: スクリーンショット 2021-10-28 21.31.42.png]デプロイが終わるとCfnOutput で作成したAppsync のAPI_KEY とENDPOINT を出力されるのでメモっとく
-
+↓の感じでAPI_KEY, Endpoint が出力されたのでめもりましょう
+```
+Outputs:
+BackendStack.ApiKey = da2-hnc62rbufjcgtm72buavridvhm
+BackendStack.EndPoint = https://vyi6bkwcu5eqlo6zhwwcphd5fu.appsync-api.ap-northeast-1.amazonaws.com/graphql
+```
 ## Web アプリケーションのビルド
 
 ビルドする前に環境変数にさっきメモしたやつをぶち込みましょう
@@ -126,7 +131,7 @@ cdk deploy FrontendStack
 ## ブラウザで確認
 
 確認できたらおしまい。おつかれさまでした。
-[Image: スクリーンショット 2021-10-28 21.53.59.png]
+
 ## 環境のお掃除
 
 ```
