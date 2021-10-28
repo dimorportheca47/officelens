@@ -12,6 +12,7 @@ with open("./schema.txt") as f:
 with open("./query_DeviceTable_Resolver.txt") as f:
     query_DeviceTable_Resolver = f.read()
 
+
 class BackendStack(cdk.Stack):
 
     def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
@@ -28,16 +29,19 @@ class BackendStack(cdk.Stack):
             api_id=graphql_api.attr_api_id
         )
 
+        self.graphql_api = graphql_api
+        self.api_key = api_key
+
         cdk.CfnOutput(
             self,'EndPoint',
-            description='Appsync EndPoint: ',
-            value=graphql_api.attr_graph_ql_url
+            description='REACT_APP_ENDPOINT',
+            value=graphql_api.attr_graph_ql_url,
         )
 
         cdk.CfnOutput(
             self,'ApiKey',
-            description='Appsync ApiKey: ',
-            value=api_key.attr_api_key
+            description='REACT_APP_API_KEY',
+            value=api_key.attr_api_key,
         )
 
         device_table = ddb.Table(

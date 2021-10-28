@@ -1,70 +1,304 @@
-# Getting Started with Create React App
+# AWS Office Lens の使い方
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## 目次
 
-## Available Scripts
+* 参考
+* 概要
+* AWS CDK のCLIのインストール
+* AWS CDK プロジェクトの作成
+* 仮想環境のアクティブ化
+* パッケージの追加
+* Backend Stackの作成
+* Web アプリケーションのビルド
+* Frontend Stackの作成
+* ブラウザで確認
+* お掃除
+* その他
 
-In the project directory, you can run:
+## 参考
 
-### `yarn start`
+https://docs.aws.amazon.com/cdk/api/latest/python/
+https://dev.classmethod.jp/articles/cloudfront-origin-access-identity-to-restrict-access-to-s3-bucket-in-aws-cdk/
+https://summit-online-japan-cdk.workshop.aws/15-prerequisites/600-python.html
+https://dev.classmethod.jp/articles/aws-cdk-deploy-react/
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## 概要
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+[Image: スクリーンショット 0003-10-08 13.46.52.png]
+## AWS CDK のCLIのインストール
 
-### `yarn test`
+```
+npm install -g aws-cdk
+```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## プロジェクトの作成 or AWS Office Lens をCodeCommit から持ってくる
 
-### `yarn build`
+```
+# 作業ログ
+mkdir aws-office-lens
+cd aws-office-lens
+cdk init app --language=python
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+# clone
+`git clone https://git-codecommit.ap-northeast-1.amazonaws.com/v1/repos/AWS-Office-Lens`
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## 仮想環境のアクティブ化
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```
+source .venv/bin/activate
+```
 
-### `yarn eject`
+## パッケージの追加（足りないのあったらその都度入れてくださいませ）
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+pip install aws-cdk.aws-appsync aws-cdk.aws-cloudfront aws-cdk.aws-s3 aws-cdk.aws-s3-deployment（現状のディレクトリ構成はこんな感じ）
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+`.``venv ``❯`` tree ``.`` ``-``I node_modules -L 2 （一部）省略
+├── README.md
+├── app.py
+├── aws_office_lens
+│   ├── __init__.py
+│   ├── backend_stack.py # Raspi から Appsync 
+│   └── frontend_stack.py # S3, Cloudfront
+├── cdk.json
+├── cdk.out
+├── lambda
+│   ├── mutation.py # DDB Stream をトリガーにMutationするやつ
+│   └── putitem.py # Kinesis Stream で来たやつをDDB に書き込むやつ
+├── query_DeviceTable_Resolver.txt # Appsyc のリゾルバ
+├── requirements.txt
+├── schema.txt # Appsync のスキーマ
+├── setup.py
+├── source.bat
+├── stack.py # front or backend で使ってるstack
+└── web
+    ├── README.md
+    ├── build # cloudfront にデプロイされるファイル
+    ├── package-lock.json
+    ├── package.json
+    ├── public
+    ├── src
+    ├── tsconfig.json
+    └── yarn.lock`
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## BackendStack （Raspi からAppsync まで）の作成
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+とりあえず、backendstack をデプロイ
 
-## Learn More
+```
+初めてのデプロイの場合は cdk bootstrap
+差分を確認したいなら cdk diff {StackName}
+cdk deploy BackendStack
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+デプロイが初回なら数分かかるかなーー
+[Image: スクリーンショット 2021-10-28 21.31.42.png]デプロイが終わるとCfnOutput で作成したAppsync のAPI_KEY とENDPOINT を出力されるのでメモっとく
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Web アプリケーションのビルド
 
-### Code Splitting
+ビルドする前に環境変数にさっきメモしたやつをぶち込みましょう
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+# web/.env
+REACT_APP_API_KEY=da2-hnc62rbufjcgtm72buavridvhm
+REACT_APP_ENDPOINT=https://vyi6bkwcu5eqlo6zhwwcphd5fu.appsync-api.ap-northeast-1.amazonaws.com/graphql
+```
 
-### Analyzing the Bundle Size
+これでビルド出来る準備が出来なのでビルドしましょう
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+# web の配下まで移動 & ビルド
+cd ./../web
+yarn build
+```
 
-### Making a Progressive Web App
+## FrontendStack （S3 + CloudFront）の作成
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+```
+cd ./../aws_office_lens
+cdk deploy FrontendStack
+```
 
-### Advanced Configuration
+## ブラウザで確認
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+確認できたらおしまい。おつかれさまでした。
+[Image: スクリーンショット 2021-10-28 21.53.59.png]
+## 環境のお掃除
 
-### Deployment
+```
+cdk deｓtroy FrontendStack
+cdk deｓtroy BackendStack
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## コードの解説 etc
 
-### `yarn build` fails to minify
+### Appsync APIの作成
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+* aws_office_lens_stack.pyに黄色の箇所を追加
+    * 作成したAppsyncに用いるためのAPI KEYも作成する必要あり
+
+```
+from aws_cdk import (
+    core as cdk,
+    aws_lambda as _lambda,
+    aws_cloudfront as cloudfront,
+    aws_s3 as s3,
+    aws_s3_deployment as s3deploy,
+    aws_appsync as appsync,
+    )
+
+
+class AwsOfficeLensStack(cdk.Stack):
+
+    def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        graphql_api = appsync.CfnGraphQLApi(
+            self,'graphqlApi',
+            name="graphql-api",
+            authentication_type="API_KEY"
+        )
+        
+         api_key = appsync.CfnApiKey(
+            self, 'Mutation-key',
+            api_id=graphql_api.attr_api_id
+        )
+
+```
+
+* （リゾルバが一切ないので書く必要がある）
+    * データソース
+        * Device(DynamoDB
+        * Mutation(ソースなし)
+    * スキーマ
+        * 調査中...
+
+### Lambdaの作成
+
+* lambdaのコードをアップロードするディレクトリの作成とPythonモジュールのGraphQLのインストール
+
+```
+mkdir lamda
+cd lambda
+touch mutation.py
+```
+
+* JSで元々書いていたのでそれをPythonに書き換える中....
+* Stackに追加
+    * EndpointはAppsyncになるため引数に取る必要あり
+    * keyも同様に作成ズムのAPI KEYを参照
+
+```
+class BackendStack(cdk.Stack):
+
+    def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+        
+        graphql_api = appsync.CfnGraphQLApi(
+            self,'graphqlApi',
+            name="graphql-api",
+            authentication_type="API_KEY"
+        )
+
+        api_key = appsync.CfnApiKey(
+            self, 'Mutation-key',
+            api_id=graphql_api.attr_api_id
+        )
+
+        ddbs_mutation = Mutation(
+            self, 'DDBSMutation',
+            endpoint = graphql_api.attr_graph_ql_url,
+            key=api_key.attr_api_key
+        )
+```
+
+### S3バケットの作成
+
+* frontend_stack.pyに下記を追加
+
+```
+class FrontendStack(cdk.Stack):
+
+    def __init__(self, scope: cdk.Construct, construct_id: str, **kwargs) -> None:
+        super().__init__(scope, construct_id, **kwargs)
+
+        website_Bucket = s3.Bucket(
+            self, 'WebsiteBucket',
+            website_error_document='index.html',
+            website_index_document='index.html',
+            block_public_access=
+                s3.BlockPublicAccess(
+                    block_public_acls=True,
+                    block_public_policy=True,
+                    ignore_public_acls=True,
+                    restrict_public_buckets=True
+                ),
+            versioned=False
+
+        )
+
+        website_identity = cloudfront.OriginAccessIdentity(
+            self, 'WebsiteIdentity'
+        )
+
+        website_Bucket_Policy = iam.PolicyStatement(
+            actions=['s3:GetObject'],
+            effect=iam.Effect.ALLOW,
+            principals=[website_identity.grant_principal],
+            resources=[website_Bucket.bucket_arn + '/*']
+        )
+
+        website_Bucket.add_to_resource_policy(website_Bucket_Policy)
+```
+
+### CloudFrontの作成
+
+* S3バケットのコードの下に以下を追加
+
+```
+website_Distribution = cloudfront.CloudFrontWebDistribution(
+            self, 'WebsiteDistribution',
+            error_configurations=[
+                cloudfront.CfnDistribution.CustomErrorResponseProperty(
+                    error_caching_min_ttl=300,
+                    error_code=403,
+                    response_code=200,
+                    response_page_path='/index.html'
+            ),
+                cloudfront.CfnDistribution.CustomErrorResponseProperty(
+                error_caching_min_ttl=300,
+                    error_code=404,
+                    response_code=200,
+                    response_page_path='/index.html'
+
+            ),
+            ],
+            origin_configs=[cloudfront.SourceConfiguration(
+                s3_origin_source=cloudfront.S3OriginConfig(
+                    s3_bucket_source=website_Bucket,
+                    origin_access_identity=website_identity,
+                ),
+                behaviors=[cloudfront.Behavior(is_default_behavior=True)]
+            )
+            ],
+            price_class=cloudfront.PriceClass.PRICE_CLASS_ALL,
+        )
+```
+
+### 実際にReact アプリケーションをS3にデプロイする
+
+```
+        s3deploy.BucketDeployment(
+            self, 'WebsiteDeploy',
+            sources=[s3deploy.Source.asset('./web/build')],
+            destination_bucket=website_Bucket,
+            distribution=website_Distribution,
+            distribution_paths=['/*']
+        )
+```
+
+

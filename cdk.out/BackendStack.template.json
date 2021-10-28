@@ -593,7 +593,7 @@
   },
   "Outputs": {
     "EndPoint": {
-      "Description": "Appsync EndPoint: ",
+      "Description": "REACT_APP_ENDPOINT",
       "Value": {
         "Fn::GetAtt": [
           "graphqlApi",
@@ -602,7 +602,7 @@
       }
     },
     "ApiKey": {
-      "Description": "Appsync ApiKey: ",
+      "Description": "REACT_APP_API_KEY",
       "Value": {
         "Fn::GetAtt": [
           "MutationKey",
