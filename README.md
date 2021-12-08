@@ -53,7 +53,7 @@ source .venv/bin/activate
 ## パッケージの追加（足りないのあったらその都度入れてくださいませ）
 
 ```
-pip install aws-cdk.aws-appsync aws-cdk.aws-cloudfront aws-cdk.aws-s3 aws-cdk.aws-s3-deployment（現状のディレクトリ構成はこんな感じ）
+pip install aws-cdk.aws-appsync aws-cdk.aws-cloudfront aws-cdk.aws-s3 aws-cdk.aws-s3-deployment aws-cdk.aws-lambda-event-sources aws-cdk.aws-iam aws-cdk.aws-iot aws-cdk.aws-iot-actions aws-cdk.aws-iotevents（現状のディレクトリ構成はこんな感じ）
 ```
 
 ```
