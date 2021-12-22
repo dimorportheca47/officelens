@@ -7,6 +7,7 @@ import logging
 import signal
 import sys
 import time
+import os
 from datetime import datetime
 
 from awscrt import io, mqtt
@@ -91,6 +92,45 @@ def arg_check():
     }
     return init_dict
 
+def file_exist_check(cert_list):
+    """
+    Check the files exists
+    all certs must placed in ./certs directory
+
+    Parameters
+    ----------
+    cert_list: Array
+    """
+
+    for file in cert_list:
+        if not os.path.exists(file):
+            # if file not found, raise
+            logger.error("cert file not found:%s", file)
+            raise RuntimeError("file_not_exists")
+
+def find_certs_file():
+    """
+    Find the certificates file from ./certs directory
+
+    Returns
+    ----------
+    file_list: Array
+        0: Root CA Cert, 1: private key, 2: certificate
+    """
+
+    certs_dir = "./certs"
+    file_list = ["AmazonRootCA1.pem", "private.pem", "certificate.crt"]
+    for _, _, names in os.walk(certs_dir):
+        for file in names:
+            if "AmazonRootCA1.pem" in file:
+                file_list[0] = certs_dir + "/" + file
+            elif "private" in file:
+                file_list[1] = certs_dir + "/" + file
+            elif "certificate" in file:
+                file_list[2] = certs_dir + "/" + file
+
+    return file_list
+
 def device_main():
     """
     main loop for dummy device
@@ -143,6 +183,7 @@ def device_main():
 
     # grove setting
     led = 4
+    ultrasonic_ranger = 2
     set_bus("RPI_1")
     pinMode(led,"OUTPUT")
 
@@ -157,10 +198,12 @@ def device_main():
             "TimeStamp":datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         }
         range = ultrasonicRead(ultrasonic_ranger)
-        if timer:
-            # 距離センサーの値が規定値より大さい場合はリセットタイマーをデクリメント
-            if range > 15:
+        # 距離センサーの値が規定値より大さい場合はリセットタイマーをデクリメント
+        if range > 15:
+            if timer > 0:
                 timer -= 1
+        else:
+            timer = 50
 
         if range >= 15 and timer <=0:
             digitalWrite(led, 1)
@@ -178,6 +221,29 @@ def device_main():
             payload=json.dumps(message),
             qos=mqtt.QoS.AT_LEAST_ONCE)
         time.sleep(wait_time)
+
+def exit_sample(msg_or_exception):
+    """
+    Exit sample with cleaning
+    Parameters
+    ----------
+    msg_or_exception: str or Exception
+    """
+    if isinstance(msg_or_exception, Exception):
+        logger.error("Exiting sample due to exception.")
+        traceback.print_exception(msg_or_exception.__class__, msg_or_exception, sys.exc_info()[2])
+    else:
+        logger.info("Exiting: %s", msg_or_exception)
+    if not mqtt_connection:
+        logger.info("Disconnecting...")
+        mqtt_connection.disconnect()
+    sys.exit(0)
+
+def exit_handler(_signal, frame):
+    """
+    Exit sample
+    """
+    exit_sample(" Key abort")
 
 if __name__ == "__main__":
     signal.signal(signal.SIGINT, exit_handler)
