@@ -1,0 +1,6 @@
+awscrt
+awsiot
+grovepi
+opencv-python
+requests-aws4auth
+botocore
