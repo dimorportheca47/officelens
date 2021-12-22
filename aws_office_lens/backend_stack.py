@@ -185,7 +185,10 @@ class BackendStack(cdk.Stack):
                         "iot:Connect"
                     ],
                    "Resource": [
-                        "arn:aws:iot:${this.region}:${this.account}:client/${iot:Connection.Thing.ThingName}",
+                        f"arn:aws:iot:{self.region}:{self.account}:client/{thing_name}",
+                        f"arn:aws:iot:{self.region}:{self.account}:client/sdk-java",
+                        f"arn:aws:iot:{self.region}:{self.account}:client/basicPubSub",
+                        f"arn:aws:iot:{self.region}:{self.account}:client/sdk-nodejs-*",
                     ]
                 },
                 {
@@ -194,8 +197,8 @@ class BackendStack(cdk.Stack):
                             "iot:Subscribe",
                         ],
                         "Resource": [
-                            "arn:aws:iot:${this.region}:${this.account}:topicfilter/data/*/${iot:Connection.Thing.ThingName}",
-                            "arn:aws:iot:${this.region}:${this.account}:topicfilter/openworld",
+                            f"arn:aws:iot:{self.region}:{self.account}:topicfilter/data/*",
+                            f"arn:aws:iot:{self.region}:{self.account}:topicfilter/sdk/test/Python",
                         ]
                     },
                     {
@@ -203,16 +206,18 @@ class BackendStack(cdk.Stack):
                         "Action": [
                             "iot:Publish",
                             "iot:Receive",
+                            "iot:RetainPublish"
                         ],
                         "Resource": [
-                            "arn:aws:iot:${this.region}:${this.account}:topic/data/*/${iot:Connection.Thing.ThingName}",
-                            "arn:aws:iot:${this.region}:${this.account}:topic/openworld",
+                            f"arn:aws:iot:${self.region}:{self.account}:topic/data/*",
+                            f"arn:aws:iot:{self.region}:{self.account}:topic/sdk/test/Python",
+
                         ]
                     },
                 ],
           }
         # policyを定義
-        policy_name = "RasberryPi-Policy"
+        policy_name = "officemonitoring-iotthing-Policy"
         cfn_iot_policy = iot.CfnPolicy(self, "iot_policy",
             policy_document=policy_document,
             policy_name = policy_name)
