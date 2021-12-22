@@ -46,5 +46,4 @@ fi
 
 # run pub/sub sample app using certificates downloaded in package
 printf "\nRunning pub/sub sample application...\n"
-python3 sensor_v2.py --device_name a478fe7a-1075-11ec-b11d-77d6a1bbc6b9 -e a21n259rx8bgt7-ats.iot.ap-northeast-1.amazonaws.com -r root-CA.crt -c a478fe7a-1075-11ec-b11d-77d6a1bbc6b9.cert.pem -k a478fe7a-1075-11ec-b11d-77d6a1bbc6b9.private.key
-# python3 testcode/sensor.py -e a21n259rx8bgt7-ats.iot.ap-northeast-1.amazonaws.com -r root-CA.crt -c a478fe7a-1075-11ec-b11d-77d6a1bbc6b9.cert.pem -k a478fe7a-1075-11ec-b11d-77d6a1bbc6b9.private.key
+python3 sensor_v2.py --device_name a478fe7a-1075-11ec-b11d-77d6a1bbc6b9 -e "Your endpoint" -r root-CA.crt -c office-monitoring.cert.pem -k office-monitoring.private.key
