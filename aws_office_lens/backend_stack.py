@@ -60,23 +60,23 @@ class BackendStack(cdk.Stack):
             removal_policy=cdk.RemovalPolicy('DESTROY')
         )
 
-        mutationTriggerdByDDBS = MutationStack(
+        mutation_triggerd_by_ddbs = MutationStack(
             self, 'mutationTriggerdByDDBS',
             endpoint=graphql_api.attr_graph_ql_url,
             key=api_key.attr_api_key,
             table=device_table
         )
 
-        dataSourceIamRole = iam.Role(
+        data_source_iamrole = iam.Role(
             self, 'dataSourceIamRole',
             assumed_by=iam.ServicePrincipal('appsync.amazonaws.com')
         )
 
-        dataSourceIamRole.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonDynamoDBFullAccess'))
+        data_source_iamrole.add_managed_policy(iam.ManagedPolicy.from_aws_managed_policy_name('AmazonDynamoDBFullAccess'))
         ddb_source = appsync.CfnDataSource(
             self, 'DDBSource',
             name='ddbsource',
-            service_role_arn=dataSourceIamRole.role_arn,
+            service_role_arn=data_source_iamrole.role_arn,
             api_id=graphql_api.attr_api_id,
             type='AMAZON_DYNAMODB',
             dynamo_db_config=appsync.CfnDataSource.DynamoDBConfigProperty(
